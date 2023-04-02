@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { CustomerService } from 'src/app/service/customer.service'
 import { ActivatedRoute } from '@angular/router'
+import { ProductService } from 'src/app/service/product.service';
 
 @Component({
-  selector: 'app-addnew',
-  templateUrl: './addnew.component.html',
-  styleUrls: ['./addnew.component.css']
+  selector: 'app-addnewproduct',
+  templateUrl: './addnewproduct.component.html',
+  styleUrls: ['./addnewproduct.component.css']
 })
-export class AddnewComponent implements OnInit {
+export class AddnewproductComponent implements OnInit {
 
   messageclass = ''
   message = ''
-  customerid: any;
+  productid: any;
   editdata: any;
   responsedata: any;
 
-  constructor(private service: CustomerService, private route: ActivatedRoute) {
+  constructor(private service: ProductService, private route: ActivatedRoute) {
 
-    this.customerid = this.route.snapshot.paramMap.get('id');
-    if (this.customerid != null) {
-      this.UpdateCustomer(this.customerid);
+    this.productid = this.route.snapshot.paramMap.get('id');
+    if (this.productid != null) {
+      this.UpdateProduct(this.productid);
     }
   }
 
@@ -29,23 +29,23 @@ export class AddnewComponent implements OnInit {
 
   register = new FormGroup({
     id: new FormControl({ value: "", disabled: true }),
+    code: new FormControl("", Validators.required),
     name: new FormControl("", Validators.required),
-    email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
-    phone: new FormControl("", Validators.required),
+    price: new FormControl("", Validators.required),
   });
 
-  SaveCustomer() {
+  SaveProduct() {
     if (this.register.valid) {
       console.log(this.register.value);
-      this.service.SaveCustomer(this.register.value).subscribe(result => {
+      this.service.SaveProduct(this.register.value).subscribe(result => {
         if (result != null) {
           this.responsedata = result;
           if (this.responsedata.message == 'added') {
-            this.message = "Customer saved successfully."
+            this.message = "Product saved successfully."
             this.messageclass = "sucess"
-            this.clearCustomer();
+            this.clearProduct();
           } else if (this.responsedata.message == 'updated') {
-            this.message = "Customer saved successfully."
+            this.message = "Product saved successfully."
             this.messageclass = "sucess"
           } else {
             this.message = "Failed to Save"
@@ -60,23 +60,23 @@ export class AddnewComponent implements OnInit {
     }
   }
 
-  clearCustomer() {
+  clearProduct() {
     this.register = new FormGroup({
       id: new FormControl(""),
+      code: new FormControl(""),
       name: new FormControl(""),
-      email: new FormControl(""),
-      phone: new FormControl(""),
+      price: new FormControl(""),
     });
   }
 
-  UpdateCustomer(Id: any) {
-    this.service.LoadCustomerbycode(Id).subscribe(data => {
+  UpdateProduct(Id: any) {
+    this.service.LoadProductbycode(Id).subscribe(data => {
       this.editdata = data;
       this.register = new FormGroup({
         id: new FormControl(this.editdata.id),
+        code: new FormControl(this.editdata.code),
         name: new FormControl(this.editdata.name),
-        email: new FormControl(this.editdata.email),
-        phone: new FormControl(this.editdata.phone),
+        price: new FormControl(this.editdata.price),
       });
     });
 
@@ -86,7 +86,7 @@ export class AddnewComponent implements OnInit {
   get name(){
     return this.register.get("name");
   }
-  get email(){
-    return this.register.get("email");
+  get price(){
+    return this.register.get("price");
   }
 }

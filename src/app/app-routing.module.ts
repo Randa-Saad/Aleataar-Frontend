@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateinvoiceComponent } from './createinvoice/createinvoice.component';
-import { AddnewComponent } from './customers/addnew/addnew.component';
+import { AddnewcustomerComponent } from './customers/addnew/addnewcustomer.component';
 import { CustomerComponent } from './customers/customer/customer.component';
 import { ListingComponent } from './listing/listing.component';
+import { ProductComponent } from './products/product/product.component';
 import { RatingComponent } from './rating/rating.component';
 import { AuthGuard } from './shared/auth.guard';
 import { LoginComponent } from './sign/login/login.component';
@@ -13,10 +14,11 @@ const routes: Routes = [
   {path:"createinvoice",component:CreateinvoiceComponent},
   {path:"editinvoice/:invoiceno",component:CreateinvoiceComponent},
   {path:"rating",component:RatingComponent},
+  {path:"product",component:ProductComponent},
   {path: 'login', component: LoginComponent },
   {path: "customer", component: CustomerComponent},
-  { path: "customer/create", component: AddnewComponent },
-  { path: "Edit/:id", component: AddnewComponent }
+  { path: "customer/create", component: AddnewcustomerComponent },
+  { path: "Edit/:id", component: AddnewcustomerComponent }
 ];
 
 @NgModule({

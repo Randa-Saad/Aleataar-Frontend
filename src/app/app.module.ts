@@ -16,9 +16,11 @@ import { LoginComponent } from './sign/login/login.component';
 import { CookieService } from 'ngx-cookie-service';
 import { TokenInterceptorService } from './service/token-interceptor.service';
 import { CustomerComponent } from './customers/customer/customer.component';
-import { AddnewComponent } from './customers/addnew/addnew.component';
+import { AddnewcustomerComponent } from './customers/addnew/addnewcustomer.component';
+import { ProductComponent } from './products/product/product.component';
+import { AddnewproductComponent } from './products/addnew/addnewproduct.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { FormsModule }   from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RatingComponent,
     LoginComponent,
     CustomerComponent,
-    AddnewComponent
+    AddnewproductComponent,
+    AddnewcustomerComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NgbModule,
     NgxExtendedPdfViewerModule,
     DataTablesModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule      
   ],
   providers: [CookieService,{provide:HTTP_INTERCEPTORS,useClass:TokenInterceptorService,multi:true}],
   bootstrap: [AppComponent]

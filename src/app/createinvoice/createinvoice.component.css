@@ -1,0 +1,9 @@
+.text-area{
+    padding: 5px 20px 5px 5px; 
+    margin: 20px 20px 20px 0px;
+    width: 200px;
+    height: 100px;
+  }
+  .sub-heading{
+    font-family: 'PT Sans Narrow', sans-serif;
+  }

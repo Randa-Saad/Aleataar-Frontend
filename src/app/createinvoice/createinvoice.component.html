@@ -14,10 +14,16 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
-                        <label>Remarks</label>
-                        <input formControlName="remarks" class="form-control"/>
+                        <label>Invoice Type</label>
+                        <span class="text-danger">*</span>
+                        <select formControlName="type" class="form-control">
+                            <option value="Consumed">Consumed</option>
+                            <option value="Segmented">Segmented</option>
+                            <option value="Totalized">Totalized</option>
+                        </select>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>Customer Code</label>
@@ -51,44 +57,90 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>Order Date</label>
                         <span class="text-danger">*</span>
-                        <input  type="date" formControlName="orderDate" class="form-control" />
+                        <input  type="text" formControlName="orderDate" class="form-control" />
                     </div>
+                    <!-- | date: 'd/M/y' -->
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>Delievery Date</label>
                         <span class="text-danger">*</span>
-                        <input type="date" formControlName="delieveryDate" class="form-control" />
+                        <input type="text" formControlName="delieveryDate" class="form-control" />
                     </div>
                 </div>
+            
 
-
-
-           
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label>D/A Code</label>
-                    <span class="text-danger">*</span>
-                    <select formControlName="dassistantId" (change)="dassistantchange()" class="form-control">
-                        <option *ngFor="let da of masterdassistant" [value]="da.code">
-                            {{da.code}}
-                        </option>
-                    </select>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>D/A Code</label>
+                        <span class="text-danger">*</span>
+                        <select formControlName="dassistantId" (change)="dassistantchange()" class="form-control">
+                            <option *ngFor="let da of masterdassistant" [value]="da.code">
+                                {{da.code}}
+                            </option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label>D/A Name</label>
-                    <input formControlName="dassistantName" class="form-control"/>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>D/A Name</label>
+                        <input formControlName="dassistantName" class="form-control"/>
+                    </div>
                 </div>
+                
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <input formControlName="remarks" class="form-control"/>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Restricted</label>
+                        <span class="text-danger">*</span>
+                        <select formControlName="restricted" class="form-control">
+                            <option value="Yes">Yes</option>
+                            <option selected="selected" value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- <form [formGroup]="pdfInsertionForm" (ngSubmit)="onSubmit(pdfInsertionForm.value)">
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        <label>PDF Insertion</label>
+                        <Textarea formControlName="pdfinsertion" class="form-control"></textarea>
+                    </div>
+                </div>
+                <button class="button" type="submit"  >Insert</button>
+            </form> -->
+            <!-- <br/>
+            <br/>
+            <hr>
+            <br>
+            <div class="col-lg-12" >
+                <label>PDF Insertion</label>
+                <input class="form-control" style="width: 100%;height: 300px;" [formControl]="pdfInsertionFormControl" type="text" placeholder="Insert Invoice Records...">
+                <br>
+                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords()">Insert</button>
+             </div>-->
             </div>
-        </div>
-        <br>
-        <br>
+            <br> 
+            <div class="col-lg-12" *ngIf="!isedit" >
+                <form [formGroup] = "textAreaForm">
+                    <!-- <div  class="sub-heading">Text Area Input Field</div> -->
+                    <label>PDF Insertion</label>
+                    <textarea cols="177" rows = "10" class ="tesxt-area" formControlName="textArea"></textarea>
+                </form>
+                <br>
+                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords()">Insert</button>
+            </div>
+
+            <br>
             <div class="row">
                 <div class="col-lg-12">
                     <table class="table table-bordered" formArrayName="details">
@@ -97,8 +149,9 @@
                             <tr>
                                 <td>Sl.No</td>
                                 <td >Product Code</td>
-                                <td style="width:500px;">Description</td>
+                                <td style="width:300px;">Description</td>
                                 <td>Qty</td>
+                                <td style="width:120px;">Type</td>
                                 <td>Price</td>
                                 <td>Total</td>
                                 <td>Action</td>
@@ -108,17 +161,24 @@
                             <tr *ngFor="let item of invproducts.controls;let i=index" [formGroupName]="i">
                                 <td>{{i+1}}</td>
                                 <td>
-                                    <select class="form-control" (change)="productchange(i)" formControlName="productCode">
-                                        <option *ngFor="let item of masterproduct" [value]="item.code">
-                                           {{item.code}}
-                                        </option>
-                                    </select>
+                                    <input type="text" list="masterproduct" class="form-control" (change)="productchange(i)" formControlName="productCode"/>
+                                    <datalist id="masterproduct">
+                                    <option *ngFor="let item of masterproduct" [value]="item.code">
+                                        {{item.code}}
+                                    </option>
+                                    </datalist>
                                 </td>
                                 <td>
                                     <input style="width:500px;"class="form-control" formControlName="productName" />
                                 </td>
                                 <td>
                                     <input class="form-control" (change)="Itemcalculation(i)" formControlName="qty" />
+                                </td>
+                                <td>
+                                    <input type="text" list="Types" class="form-control" (change)="Itemcalculation(i)" formControlName="productType"/>
+                                    <datalist id="Types">
+                                    <option *ngFor="let type of Types" [value]="type">{{type}}</option>
+                                    </datalist>
                                 </td>
                                 <td>
                                     <input class="form-control" (change)="Itemcalculation(i)" formControlName="salesPrice" />
@@ -143,34 +203,34 @@
                     </table>
                 </div>
 
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Summary Total</label>
+                    <input formControlName="total" class="form-control">
+                </div>
             </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="form-group">
-                        <label>Summary Total</label>
-                        <input formControlName="total" class="form-control">
-                    </div>
+            <!-- <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Summary Tax</label>
+                    <input formControlName="tax" class="form-control">
                 </div>
-                <!-- <div class="col-lg-4">
-                    <div class="form-group">
-                        <label>Summary Tax</label>
-                        <input formControlName="tax" class="form-control">
-                    </div>
-                </div> -->
-                <!-- <div class="col-lg-4">
-                    <div class="form-group">
-                        <label>Summary NetTotal</label>
-                        <input formControlName="netTotal" class="form-control">
-                    </div>
-                </div> -->
-                <div class="col-lg-12">
-                    <br>
-                    <button class="btn btn-success" type="submit">Save</button> | 
-                    <a class="btn btn-danger" routerLink="/">Back</a>
+            </div> -->
+            <!-- <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Summary NetTotal</label>
+                    <input formControlName="netTotal" class="form-control">
                 </div>
+            </div> -->
+            <div class="col-lg-12">
+                <br>
+                <button class="btn btn-success" type="submit">Save</button> | 
+                <a class="btn btn-danger" routerLink="/">Back</a>
+            </div>
 
-            </div>
+        </div>
 
         </div>
 

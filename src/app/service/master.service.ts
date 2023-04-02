@@ -38,6 +38,15 @@ export class MasterService {
   }
 
   SaveInvoice(invoicedata:any){
+    debugger;
+    //casting dates from text to date until finding way to bind dates correctly
+    invoicedata.orderDate=new Date(invoicedata.orderDate);
+    invoicedata.delieveryDate=new Date(invoicedata.delieveryDate);
+    //casting string to number 
+    invoicedata.details.forEach(function(item: any){  
+    item.qty=Number(item.qty);
+    item.salesPrice=Number(item.salesPrice);
+    }); 
     return this.http.post('https://localhost:7118/Invoice/Save',invoicedata);
   }
 
