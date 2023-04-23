@@ -112,7 +112,7 @@ export class CreateinvoiceComponent implements OnInit {
     deliveryAddress: this.builder.control(''),
     whMp: this.builder.control('', Validators.required),
     type: this.builder.control('', Validators.required),
-    restricted: this.builder.control('', Validators.required),
+    restricted: this.builder.control('No', Validators.required),
     orderDate: this.builder.control(''),
     delieveryDate: this.builder.control(''),
     remarks: this.builder.control(''),

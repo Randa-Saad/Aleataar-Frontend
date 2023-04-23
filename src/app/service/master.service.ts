@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
+import { take } from 'rxjs';
 //import pdfMake from 'pdfmake/build/pdfmake';
 //import pdfFonts from 'pdfmake/build/vfs_fonts';
 //pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -28,6 +29,7 @@ export class MasterService {
   }
 
   GetInvHeaderbycode(invoiceno:any){
+    debugger;
     return this.http.get('https://localhost:7118/Invoice/GetAllHeaderbyCode?invoiceno='+invoiceno);
   }
   GetInvDetailbycode(invoiceno:any){
@@ -48,6 +50,21 @@ export class MasterService {
     item.salesPrice=Number(item.salesPrice);
     }); 
     return this.http.post('https://localhost:7118/Invoice/Save',invoicedata);
+  }
+
+  SaveHeader(checkedInvoices:any){
+    debugger;
+    for (let i = 0; i < checkedInvoices.length;i++){
+      debugger;
+      this.GetInvHeaderbycode(checkedInvoices[i]).subscribe( 
+        invoiceHeader => 
+        this.http.post('https://localhost:7118/Invoice/SaveHeader',invoiceHeader).subscribe(
+          res => {console.log(res);
+            location.reload();      
+      }));
+      
+    }
+    return ;
   }
 
   GenerateInvoicePDF(invoiceno:any){

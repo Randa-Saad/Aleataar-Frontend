@@ -5,11 +5,16 @@
     <div class="card-header">
         <a class="btn btn-success" routerLink="createinvoice">New [+]</a>
     </div>
+    <div class="card-header">
+        <a class="btn btn-success" (click)="restrictInvoices()">Make Restricted</a>
+    </div>
     <div class="card-body">
 
         <table datatable [dtOptions]="dtoptions" [dtTrigger]="dtTrigger" class="table table-bordered">
             <thead class="bg-dark text-white">
                 <tr>
+                    <!-- <td><input type="checkbox" [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)"></td> -->
+                    <td>Mark</td>
                     <td>Invoice No</td>
                     <td>WH/MP</td>
                     <td>Order Date</td>
@@ -24,7 +29,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of Invoiceheader">
+                <tr *ngFor="let item of Invoiceheader let i=index;">
+                    <td><input type="checkbox" value="{{item.invoiceNo}}" (click)="addInvoiceCheckStatus(item.invoiceNo)" [(ngModel)]="Invoiceheader[i].checked"></td>
                     <td>{{item.invoiceNo}}</td>
                     <td>{{item.whMp}}</td>
                     <td>{{item.orderDate | date: 'd/M/y'}}</td>

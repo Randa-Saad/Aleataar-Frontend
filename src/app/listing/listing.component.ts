@@ -21,6 +21,7 @@ export class ListingComponent implements OnInit {
   invoiceno: any;
   dtoptions: DataTables.Settings = {};
   dtTrigger:Subject<any>=new Subject<any>();
+  checkedInvoices:string[] = [];
 
   ngOnInit(): void {
     this.dtoptions = {
@@ -35,13 +36,18 @@ export class ListingComponent implements OnInit {
     };
     this.LoadInvoice();
   }
-
+  
+  //#region Load,edit,remove invoice
   LoadInvoice() {
     this.service.GetAllInvoice().subscribe(res => {
       this.Invoiceheader = res;
       console.log(res);
       this.dtTrigger.next(null);
     });
+  }
+
+  Editinvoice(invoiceno: any) {
+    this.router.navigateByUrl('/editinvoice/' + invoiceno);
   }
 
   invoiceremove(invoiceno: any) {
@@ -59,39 +65,73 @@ export class ListingComponent implements OnInit {
     }
     window.location.reload();
   }
+//#endregion
 
-  Editinvoice(invoiceno: any) {
-    this.router.navigateByUrl('/editinvoice/' + invoiceno);
+//#region Restrict invoices
+  addInvoiceCheckStatus(invoiceNo:number)
+  {
+    if (this.checkedInvoices?.includes(invoiceNo.toString()))
+      this.checkedInvoices?.splice(this.checkedInvoices?.indexOf(invoiceNo.toString()), 1); 
+    else
+      this.checkedInvoices?.push(invoiceNo.toString());
   }
-  PrintInvoice(invoiceno: any) {
-    this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
-      let blob: Blob = res.body as Blob;
-      let url = window.URL.createObjectURL(blob);
-      window.open(url);
-    });
+  restrictInvoices()
+  {
+      this.service.SaveHeader(this.checkedInvoices);
   }
-  DownloadInvoice(invoiceno: any) {
-    this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
-      let blob: Blob = res.body as Blob;
-      let url = window.URL.createObjectURL(blob);
+  //#endregion
 
-      let a = document.createElement('a');
-      a.download = invoiceno;
-      a.href = url;
-      a.click();
+  //#region Commented ==> Try:Check all boxes when Check first one
+      // checkAllCheckBox(ev: any) {
+      
+      //   this.Invoiceheader.forEach((x: { checked: any; }) =>{
+      //     x.checked = ev.target.checked
+      //     console.log(x.checked);
+      //   })
+      // }
+      /*------------------------------------------
+      --------------------------------------------
+      call isAllCheckBoxChecked() function
+      --------------------------------------------
+      --------------------------------------------*/
+      // isAllCheckBoxChecked() {
+      //   debugger;
+      //   return this.Invoiceheader.every((p: { checked: any; }) => p.checked);
+      // }
+  //#endregion
 
-    });
-  }
+  //#region Print,download,preview invoice
+    PrintInvoice(invoiceno: any) {
+      this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
+        let blob: Blob = res.body as Blob;
+        let url = window.URL.createObjectURL(blob);
+        window.open(url);
+      });
+    }
+    DownloadInvoice(invoiceno: any) {
+      this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
+        let blob: Blob = res.body as Blob;
+        let url = window.URL.createObjectURL(blob);
 
-  PreviewInvoice(invoiceno: any) {
-    this.invoiceno = invoiceno;
-    this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
-      let blob: Blob = res.body as Blob;
-      let url = window.URL.createObjectURL(blob);
-      this.pdfurl = url;
-      this.modalservice.open(this.popupview, { size: 'lg' });
-      //window.open(url);
-    });
-  }
+        let a = document.createElement('a');
+        a.download = invoiceno;
+        a.href = url;
+        a.click();
+
+      });
+    }
+
+    PreviewInvoice(invoiceno: any) {
+      this.invoiceno = invoiceno;
+      this.service.GenerateInvoicePDF(invoiceno).subscribe(res => {
+        let blob: Blob = res.body as Blob;
+        let url = window.URL.createObjectURL(blob);
+        this.pdfurl = url;
+        this.modalservice.open(this.popupview, { size: 'lg' });
+        //window.open(url);
+      });
+    }
+  //#endregion
+
 
 }
