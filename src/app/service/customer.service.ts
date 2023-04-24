@@ -14,13 +14,14 @@ apiurl='https://localhost:7118/Customer';
      return this.http.get(this.apiurl+"/GetAll");
    }
    SaveCustomer(customedata:any){
-    return this.http.post(this.apiurl,customedata);
+    debugger;
+    return this.http.post(this.apiurl+"/SaveCustomer",customedata);
    }
    LoadCustomerbycode(id:any){
-    return this.http.get(this.apiurl+'/'+id);
+    return this.http.get(this.apiurl+'/GetByCode?Code='+id);
   }
   RemoveCustomer(id:any){
-    return this.http.delete(this.apiurl+'/'+id);
+    console.log(this.apiurl+'/Remove?CustomerCode='+id);
+    return this.http.delete(this.apiurl+'/Remove?CustomerCode='+id);
   }
-
 }

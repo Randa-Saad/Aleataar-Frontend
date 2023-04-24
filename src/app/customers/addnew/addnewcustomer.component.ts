@@ -12,15 +12,20 @@ export class AddnewcustomerComponent implements OnInit {
 
   messageclass = ''
   message = ''
-  customerid: any;
+  customercode: any;
   editdata: any;
   responsedata: any;
+  isedit = false;
+  public textAreaForm!: FormGroup;
+  pdfInsertionFormControl = new FormControl('',);
 
   constructor(private service: CustomerService, private route: ActivatedRoute) {
 
-    this.customerid = this.route.snapshot.paramMap.get('id');
-    if (this.customerid != null) {
-      this.UpdateCustomer(this.customerid);
+    this.customercode = this.route.snapshot.paramMap.get('code');
+    if (this.customercode != null) {
+      console.log(this.route.snapshot.paramMap.get('code'));
+      this.isedit = true;
+      this.UpdateCustomer(this.customercode);
     }
   }
 
@@ -28,23 +33,28 @@ export class AddnewcustomerComponent implements OnInit {
   }
 
   register = new FormGroup({
-    id: new FormControl({ value: "", disabled: true }),
+    code: new FormControl("", Validators.required),
     name: new FormControl("", Validators.required),
-    email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
-    phone: new FormControl("", Validators.required),
+    email: new FormControl("", Validators.required),
+    phoneno: new FormControl("", Validators.required),
+    address: new FormControl("", Validators.required),
+    area: new FormControl("", Validators.required),
+    specialMark: new FormControl("", Validators.required),
   });
 
   SaveCustomer() {
     if (this.register.valid) {
       console.log(this.register.value);
       this.service.SaveCustomer(this.register.value).subscribe(result => {
+        debugger;
         if (result != null) {
+          debugger;
           this.responsedata = result;
-          if (this.responsedata.message == 'added') {
+          if (this.responsedata.result == 'added') {
             this.message = "Customer saved successfully."
             this.messageclass = "sucess"
             this.clearCustomer();
-          } else if (this.responsedata.message == 'updated') {
+          } else if (this.responsedata.result == 'updated') {
             this.message = "Customer saved successfully."
             this.messageclass = "sucess"
           } else {
@@ -62,31 +72,67 @@ export class AddnewcustomerComponent implements OnInit {
 
   clearCustomer() {
     this.register = new FormGroup({
-      id: new FormControl(""),
+      code: new FormControl(""),
       name: new FormControl(""),
       email: new FormControl(""),
-      phone: new FormControl(""),
+      phoneno: new FormControl(""),
+      address: new FormControl(""),
+      area: new FormControl(""),
+      specialMark: new FormControl(""),
     });
   }
 
-  UpdateCustomer(Id: any) {
-    this.service.LoadCustomerbycode(Id).subscribe(data => {
+  UpdateCustomer(code: any) {
+    this.service.LoadCustomerbycode(code).subscribe(data => {
       this.editdata = data;
+
       this.register = new FormGroup({
-        id: new FormControl(this.editdata.id),
+        code: new FormControl(this.editdata.code),
         name: new FormControl(this.editdata.name),
         email: new FormControl(this.editdata.email),
-        phone: new FormControl(this.editdata.phone),
+        phoneno: new FormControl(this.editdata.phoneno),
+        address: new FormControl(this.editdata.address),
+      area: new FormControl(this.editdata.area),
+      specialMark: new FormControl(this.editdata.specialMark),
       });
     });
 
 
   }
 
+  insertMultiCustomers()
+  {
+    let customers =  this.textAreaForm?.get("textArea")?.value ;
+    console.log(customers);
+  }
+  changeFormValidators()
+  {
+    this.register = new FormGroup({
+      code: new FormControl(""),
+      name: new FormControl("",),
+      email: new FormControl(""),
+      phoneno: new FormControl(""),
+      address: new FormControl(""),
+      area: new FormControl(""),
+      specialMark: new FormControl(""),
+    })
+  }
   get name(){
     return this.register.get("name");
   }
   get email(){
     return this.register.get("email");
+  }
+  
+  get area(){
+    return this.register.get("area");
+  }
+  
+  get address(){
+    return this.register.get("address");
+  }
+  
+  get specialMark(){
+    return this.register.get("specialMark");
   }
 }
