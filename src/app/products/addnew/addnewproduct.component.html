@@ -10,7 +10,7 @@
       <div class="offset-lg-3 col-lg-6">
           <div class="form-group">
               <label for="txtcode">Code</label>
-              <input type="text" id="txtcode" class="form-control" formControlName="id" autocomplete="off" />
+              <input type="text" id="txtcode" class="form-control" formControlName="code" autocomplete="off" />
           </div>
       </div>
   </div>
@@ -26,9 +26,54 @@
   <div class="row">
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
-            <label for="txtprice">Price</label>
-            <input type="text" id="txtprice" class="form-control"  formControlName="price" autocomplete="off"  />
-            <span *ngIf="price && price.invalid" class="error">Please enter data</span>
+            <label for="txtconsumedPrice">Consume Price</label>
+            <input type="text" id="txtconsumedPrice" class="form-control"  formControlName="consumedPrice" autocomplete="off"  />
+            <span *ngIf="consumedPrice && consumedPrice.invalid && consumedPrice.touched" class="error">Please enter data</span>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <div class="form-group">
+            <label for="txtsegmentedPrice">Segment Price</label>
+            <input type="text" id="txtsegmentedPrice" class="form-control"  formControlName="segmentedPrice" autocomplete="off"  />
+            <span *ngIf="segmentedPrice && segmentedPrice.invalid && segmentedPrice.touched" class="error">Please enter data</span>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <div class="form-group">
+            <label for="totalizedPrice">Totalize Price</label>
+            <input type="text" id="totalizedPrice" class="form-control"  formControlName="totalizedPrice" autocomplete="off"  />
+            <span *ngIf="totalizedPrice && totalizedPrice.invalid && totalizedPrice.touched" class="error">Please enter data</span>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <div class="form-group">
+            <label for="countedPieces">Pieces Count</label>
+            <input type="text" id="countedPieces" class="form-control"  formControlName="countedPieces" autocomplete="off"  />
+            <span *ngIf="countedPieces && countedPieces.invalid && countedPieces.touched" class="error">Please enter data</span>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <div class="form-group">
+            <label for="countedBoxes">Boxes Count</label>
+            <input type="text" id="countedBoxes" class="form-control"  formControlName="countedBoxes" autocomplete="off"  />
+            <span *ngIf="countedBoxes && countedBoxes.invalid && countedBoxes.touched" class="error">Please enter data</span>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <div class="form-group">
+            <label for="countedCtns">Ctns Count</label>
+            <input type="text" id="countedCtns" class="form-control"  formControlName="countedCtns" autocomplete="off"  />
+            <span *ngIf="countedCtns && countedCtns.invalid && countedCtns.touched" class="error">Please enter data</span>
         </div>
     </div>
   </div>

@@ -14,7 +14,6 @@ apiurl='https://localhost:7118/Customer';
      return this.http.get(this.apiurl+"/GetAll");
    }
    SaveCustomer(customedata:any){
-    debugger;
     return this.http.post(this.apiurl+"/SaveCustomer",customedata);
    }
    LoadCustomerbycode(id:any){

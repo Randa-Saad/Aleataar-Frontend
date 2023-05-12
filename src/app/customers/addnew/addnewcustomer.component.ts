@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { CustomerService } from 'src/app/service/customer.service'
 import { ActivatedRoute } from '@angular/router'
 
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router'
   styleUrls: ['./addnewcustomer.component.css']
 })
 export class AddnewcustomerComponent implements OnInit {
-
+  public disabled = false;
   messageclass = ''
   message = ''
   customercode: any;
@@ -17,9 +17,8 @@ export class AddnewcustomerComponent implements OnInit {
   responsedata: any;
   isedit = false;
   public textAreaForm!: FormGroup;
-  pdfInsertionFormControl = new FormControl('',);
 
-  constructor(private service: CustomerService, private route: ActivatedRoute) {
+  constructor(private builder: FormBuilder,private service: CustomerService, private route: ActivatedRoute) {
 
     this.customercode = this.route.snapshot.paramMap.get('code');
     if (this.customercode != null) {
@@ -27,6 +26,12 @@ export class AddnewcustomerComponent implements OnInit {
       this.isedit = true;
       this.UpdateCustomer(this.customercode);
     }
+
+    
+    this.textAreaForm = this.builder.group({
+      textArea: ""
+    });
+
   }
 
   ngOnInit(): void {
@@ -92,30 +97,69 @@ export class AddnewcustomerComponent implements OnInit {
         email: new FormControl(this.editdata.email),
         phoneno: new FormControl(this.editdata.phoneno),
         address: new FormControl(this.editdata.address),
-      area: new FormControl(this.editdata.area),
-      specialMark: new FormControl(this.editdata.specialMark),
+        area: new FormControl(this.editdata.area),
+        specialMark: new FormControl(this.editdata.specialMark),
       });
     });
 
 
   }
 
-  insertMultiCustomers()
+  insertMultiCustomers(): void
   {
     let customers =  this.textAreaForm?.get("textArea")?.value ;
-    console.log(customers);
+    let splittedCustomers = customers.split(/\r?\n/);
+    for(let p =0;p<splittedCustomers.length;p++) {
+    var customerArr =  splittedCustomers[p].split("/");
+    console.log("customerArr",customerArr);
+    customerArr.splice(0, 0);
+    let newCustomer = {code:customerArr[0],
+                       name:customerArr[1],
+                       email:customerArr[2],
+                       phoneno:customerArr[3],
+                       specialMark:customerArr[4],
+                       area:customerArr[5],
+                       address:customerArr[6]};
+    this.service.SaveCustomer(newCustomer).subscribe(result => {
+      if (result != null) {
+        debugger;
+        this.responsedata = result;
+        if (this.responsedata.result == 'added') {
+          this.message = "Customer saved successfully."
+          this.messageclass = "sucess"
+          this.clearCustomer();
+        } else if (this.responsedata.result == 'updated') {
+          this.message = "Customer saved successfully."
+          this.messageclass = "sucess"
+        } else {
+          this.message = "Failed to Save"
+          this.messageclass = "error"
+        }
+
+      }
+    });
+    }
   }
-  changeFormValidators()
+
+  disableUniAdd()
   {
     this.register = new FormGroup({
-      code: new FormControl(""),
-      name: new FormControl("",),
-      email: new FormControl(""),
-      phoneno: new FormControl(""),
-      address: new FormControl(""),
-      area: new FormControl(""),
-      specialMark: new FormControl(""),
+      code: new FormControl({value:'',disabled:true}),
+      name: new FormControl({value:'',disabled:true}),
+      email: new FormControl({value:'',disabled:true}),
+      phoneno: new FormControl({value:'',disabled:true}),
+      address: new FormControl({value:'',disabled:true}),
+      area: new FormControl({value:'',disabled:true}),
+      specialMark: new FormControl({value:'',disabled:true}),
     })
+    this.disabled = true;
+  }
+
+  disableMultiCustomers()
+  {
+    this.textAreaForm = this.builder.group({
+      textArea: new FormControl({value:'',disabled:true})
+    });
   }
   get name(){
     return this.register.get("name");

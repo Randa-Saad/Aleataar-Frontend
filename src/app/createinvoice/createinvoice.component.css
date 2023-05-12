@@ -7,3 +7,7 @@
   .sub-heading{
     font-family: 'PT Sans Narrow', sans-serif;
   }
+  .vl {
+    border-left: 6px solid green;
+    height: 5000px;
+  }

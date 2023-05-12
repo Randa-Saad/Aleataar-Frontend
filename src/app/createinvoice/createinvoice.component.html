@@ -38,7 +38,7 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>Customer Name</label>
-                        <input formControlName="customerName" class="form-control"/>
+                        <input formControlName="customerName" class="form-control" />
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -62,7 +62,7 @@
                     <div class="form-group">
                         <label>Order Date</label>
                         <span class="text-danger">*</span>
-                        <input  type="text" formControlName="orderDate" class="form-control" />
+                        <input type="text" formControlName="orderDate" class="form-control" />
                     </div>
                     <!-- | date: 'd/M/y' -->
                 </div>
@@ -73,7 +73,7 @@
                         <input type="text" formControlName="delieveryDate" class="form-control" />
                     </div>
                 </div>
-            
+
 
                 <div class="col-lg-6">
                     <div class="form-group">
@@ -89,14 +89,14 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>D/A Name</label>
-                        <input formControlName="dassistantName" class="form-control"/>
+                        <input formControlName="dassistantName" class="form-control" />
                     </div>
                 </div>
-                
+
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label>Remarks</label>
-                        <input formControlName="remarks" class="form-control"/>
+                        <input formControlName="remarks" class="form-control" />
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -109,35 +109,37 @@
                         </select>
                     </div>
                 </div>
-                <!-- <form [formGroup]="pdfInsertionForm" (ngSubmit)="onSubmit(pdfInsertionForm.value)">
-                <div class="col-lg-8">
-                    <div class="form-group">
-                        <label>PDF Insertion</label>
-                        <Textarea formControlName="pdfinsertion" class="form-control"></textarea>
-                    </div>
-                </div>
-                <button class="button" type="submit"  >Insert</button>
-            </form> -->
-            <!-- <br/>
-            <br/>
-            <hr>
-            <br>
-            <div class="col-lg-12" >
-                <label>PDF Insertion</label>
-                <input class="form-control" style="width: 100%;height: 300px;" [formControl]="pdfInsertionFormControl" type="text" placeholder="Insert Invoice Records...">
-                <br>
-                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords()">Insert</button>
-             </div>-->
             </div>
-            <br> 
-            <div class="col-lg-12" *ngIf="!isedit" >
-                <form [formGroup] = "textAreaForm">
-                    <!-- <div  class="sub-heading">Text Area Input Field</div> -->
+
+            <br>
+            <a class="btn btn-success" (click)="enableInsertionWay('Pdf')">PDF Insertion</a> |
+            <a class="btn btn-success" (click)="enableInsertionWay('Multi')">Multi Insertion</a>
+            <br>
+
+            <div class="col-lg-12" *ngIf="!isedit && enablePdfInsertion">
+                <form [formGroup]="textAreaForm">
                     <label>PDF Insertion</label>
-                    <textarea cols="177" rows = "10" class ="tesxt-area" formControlName="textArea"></textarea>
+                    <textarea cols="177" rows="10" class="tesxt-area" formControlName="textArea"></textarea>
                 </form>
                 <br>
-                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords()">Insert</button>
+                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords('Pdf')">Insert</button>
+            </div>
+
+            <div class="col-lg-12" *ngIf="!isedit && enableMultiInsertion">
+                <form [formGroup]="multiInsertionForm">
+                    <p>Multi Insertion</p>
+                    <textarea cols="40" rows="10" class="tesxt-area" formControlName="codeTextArea" placeholder="Enter codes here..."></textarea>
+                    <span class="vl"></span>
+                    <!-- <textarea cols="50" rows="10" class="tesxt-area" formControlName="descriptionTextArea" placeholder="Description..."></textarea>
+                    <span class="vl"></span> -->
+                    <textarea cols="40" rows="10" class="tesxt-area" (click)="insertDescriptions();"formControlName="quantityTextArea" placeholder="Enter quantities here..."></textarea>
+                    <span class="vl"></span>
+                    <textarea cols="40" rows="10" class="tesxt-area" formControlName="typeTextArea" placeholder="Enter (ctn-box-piece) here..."></textarea>
+                    <span class="vl"></span>
+                    <textarea cols="40" rows="10" class="tesxt-area" formControlName="PriceTextArea" placeholder="Enter prices here..."></textarea>
+                </form>
+                <br>
+                <button class="button" class="btn btn-success" (click)="insertInvoiceOnRecords('Multi')">Insert</button>
             </div>
 
             <br>
@@ -148,7 +150,7 @@
                         <thead class="bg-primary text-white">
                             <tr>
                                 <td>Sl.No</td>
-                                <td >Product Code</td>
+                                <td>Product Code</td>
                                 <td style="width:300px;">Description</td>
                                 <td>Qty</td>
                                 <td style="width:120px;">Type</td>
@@ -161,27 +163,30 @@
                             <tr *ngFor="let item of invproducts.controls;let i=index" [formGroupName]="i">
                                 <td>{{i+1}}</td>
                                 <td>
-                                    <input type="text" list="masterproduct" class="form-control" (change)="productchange(i)" formControlName="productCode"/>
+                                    <input type="text" list="masterproduct" class="form-control"
+                                        (change)="productchange(i)" formControlName="productCode" />
                                     <datalist id="masterproduct">
-                                    <option *ngFor="let item of masterproduct" [value]="item.code">
-                                        {{item.code}}
-                                    </option>
+                                        <option *ngFor="let item of masterproduct" [value]="item.code">
+                                            {{item.code}}
+                                        </option>
                                     </datalist>
                                 </td>
                                 <td>
-                                    <input style="width:500px;"class="form-control" formControlName="productName" />
+                                    <input style="width:500px;" class="form-control" formControlName="productName" />
                                 </td>
                                 <td>
                                     <input class="form-control" (change)="Itemcalculation(i)" formControlName="qty" />
                                 </td>
                                 <td>
-                                    <input type="text" list="Types" class="form-control" (change)="Itemcalculation(i)" formControlName="productType"/>
+                                    <input type="text" list="Types" class="form-control" (change)="Itemcalculation(i)"
+                                        formControlName="productType" />
                                     <datalist id="Types">
-                                    <option *ngFor="let type of Types" [value]="type">{{type}}</option>
+                                        <option *ngFor="let type of Types" [value]="type">{{type}}</option>
                                     </datalist>
                                 </td>
                                 <td>
-                                    <input class="form-control" (change)="Itemcalculation(i)" formControlName="salesPrice" />
+                                    <input class="form-control" (change)="Itemcalculation(i)"
+                                        formControlName="salesPrice" />
                                 </td>
                                 <td>
                                     <input class="form-control" formControlName="total" />
@@ -203,34 +208,34 @@
                     </table>
                 </div>
 
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="form-group">
-                    <label>Summary Total</label>
-                    <input formControlName="total" class="form-control">
-                </div>
             </div>
-            <!-- <div class="col-lg-4">
+            <br>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Summary Total</label>
+                        <input formControlName="total" class="form-control">
+                    </div>
+                </div>
+                <!-- <div class="col-lg-4">
                 <div class="form-group">
                     <label>Summary Tax</label>
                     <input formControlName="tax" class="form-control">
                 </div>
             </div> -->
-            <!-- <div class="col-lg-4">
+                <!-- <div class="col-lg-4">
                 <div class="form-group">
                     <label>Summary NetTotal</label>
                     <input formControlName="netTotal" class="form-control">
                 </div>
             </div> -->
-            <div class="col-lg-12">
-                <br>
-                <button class="btn btn-success" type="submit">Save</button> | 
-                <a class="btn btn-danger" routerLink="/">Back</a>
-            </div>
+                <div class="col-lg-12">
+                    <br>
+                    <button class="btn btn-success" type="submit">Save</button> |
+                    <a class="btn btn-danger" routerLink="/">Back</a>
+                </div>
 
-        </div>
+            </div>
 
         </div>
 

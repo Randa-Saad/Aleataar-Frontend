@@ -11,7 +11,6 @@ export class ProductComponent implements OnInit {
 
   constructor(private service:ProductService) { 
     this.LoadProduct();
-    this.productdata=this.LoadProduct();
   }
   dtoptions: DataTables.Settings = {};
   dtTrigger:Subject<any>=new Subject<any>();
@@ -21,7 +20,7 @@ productdata:any;
     this.dtoptions = {
       pagingType: 'full_numbers',
       searching:true,
-    //  paging:false
+      paging:true,
     lengthChange:false,
     language:{
       searchPlaceholder:'Text Product'
@@ -36,9 +35,9 @@ productdata:any;
     });
   }
 
-  delete(ID:any){
+  delete(code:any){
     if(confirm("Do you want to remove?")){
-    this.service.RemoveProduct(ID).subscribe(data=>{
+    this.service.RemoveProduct(code).subscribe(data=>{
       this.LoadProduct();
     });
   }

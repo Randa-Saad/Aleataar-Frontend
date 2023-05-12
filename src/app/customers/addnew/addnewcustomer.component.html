@@ -10,7 +10,7 @@
       <div class="offset-lg-3 col-lg-6">
           <div class="form-group">
               <label for="txtcode">Code</label>
-              <input type="text" id="txtcode" class="form-control" formControlName="code" autocomplete="off" />
+              <input type="text" id="txtcode" class="form-control" formControlName="code" autocomplete="off" (click)="disableMultiCustomers();" />
           </div>
       </div>
   </div>
@@ -18,7 +18,7 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtname">Name</label>
-            <input type="text" id="txtname" class="form-control"  formControlName="name" autocomplete="off"  />
+            <input type="text" id="txtname" class="form-control"  formControlName="name" autocomplete="off" />
             <span *ngIf="name && name.invalid && name.touched" class="error">Please enter data</span>
         </div>
     </div>
@@ -27,7 +27,7 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtemail">Email</label>
-            <input type="text" id="txtemail" class="form-control"  formControlName="email" autocomplete="off"  />
+            <input type="text" id="txtemail" class="form-control"  formControlName="email" autocomplete="off" />
             <span *ngIf="email && email.invalid && email.touched" class="error">Please enter valid Email</span>
         </div>
     </div>
@@ -36,7 +36,7 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtphone">Phone</label>
-            <input type="text" id="txtphone" class="form-control"  formControlName="phoneno" autocomplete="off"  />
+            <input type="text" id="txtphone" class="form-control"  formControlName="phoneno" autocomplete="off" />
         </div>
     </div>
   </div>
@@ -45,7 +45,7 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtAddress">Address</label>
-            <input type="text" id="txtAddress" class="form-control"  formControlName="address" autocomplete="off"  />
+            <input type="text" id="txtAddress" class="form-control"  formControlName="address" autocomplete="off" />
             <span *ngIf="address && address.invalid &&  address.touched" class="error">Please enter an address</span>
         </div>
     </div>
@@ -54,7 +54,7 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtArea">Area</label>
-            <input type="text" id="txtArea" class="form-control"  formControlName="area" autocomplete="off"  />
+            <input type="text" id="txtArea" class="form-control"  formControlName="area" autocomplete="off" />
             <span *ngIf="area && area.invalid &&  area.touched" class="error">Please enter an area</span>
         </div>
     </div>
@@ -63,27 +63,26 @@
     <div class="offset-lg-3 col-lg-6">
         <div class="form-group">
             <label for="txtSpecialMark">Special Mark</label>
-            <input type="text" id="txtSpecialMark" class="form-control"  formControlName="specialMark" autocomplete="off"  />
+            <input type="text" id="txtSpecialMark" class="form-control"  formControlName="specialMark" autocomplete="off" />
             <span *ngIf="specialMark && specialMark.invalid && specialMark.touched" class="error">Please enter a special mark</span>
         </div>
     </div>
   </div>
   <div class="row">
-    <div class="offset-lg-3 col-lg-6" *ngIf="!isedit" >
+    <div class="offset-lg-3 col-lg-6" *ngIf="!isedit " >
       <form [formGroup] = "textAreaForm">
-          <!-- <div  class="sub-heading">Text Area Input Field</div> -->
           <label>Add Multi Customers</label>
-          <textarea cols="125" rows = "10" class ="tesxt-area" formControlName="textArea" (click)="changeFormValidators()"></textarea>
+          <textarea cols="125" rows = "10" class ="tesxt-area" formControlName="textArea" (click)="disableUniAdd()"></textarea>
       </form>
       <br>
-      <button class="button" class="btn btn-success" (click)="insertMultiCustomers()" >Insert</button>
+      <button class="button" class="btn btn-success" (click)="insertMultiCustomers()" *ngIf="disabled">Insert</button>
     </div>
   </div>
   <div class="row">
     <div class="offset-lg-3 col-lg-2">
       <br>
         <div class="form-group">
-           <button type="submit" class="btn btn-primary btn-lg btn-block" >Submit</button>
+           <button type="submit" class="btn btn-primary btn-lg btn-block" *ngIf="!disabled">Submit</button>
         </div>
     </div>
     <div class="col-lg-3">

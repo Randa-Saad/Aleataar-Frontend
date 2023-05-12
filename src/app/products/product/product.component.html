@@ -1,72 +1,42 @@
-<!-- <div class="card-box" style="margin: 10%;">
-    <div class="row">
-        <div class="col-sm-4">
-            <a routerLink="create" id="addbtn" class="btn btn-success btn-rounded">Add New</a>
-        </div>
-    </div>
-    <br>
-
-    <div class="row">
-        <div class="table-responsive">
-
-            <table class="table table-bordered" id="datatable" role="grid">
-                <thead class="bg-primary text-white">
-                    <tr role="row">
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of customerdata">
-                        <td>{{item.code}}</td>
-                        <td>{{item.name}}</td>
-                        <td>{{item.email}}</td>
-                        <td>{{item.phoneno}}</td>
-                        <td><button routerLink="Edit/{{item.id}}" class="btn btn-primary">Edit</button> | <button
-                                (click)="delete(item.id)" class="btn btn-danger">Delete</button></td>
-                    </tr>
-
-                </tbody>
-            </table>
-
-        </div>
-    </div>
-</div> -->
 <div class="card" style=" margin : 90px;width: 1200px">
     <br>
     <h3 style="margin-left:5px;" >Products </h3>
     <br>
-    <!-- <div class="card-header">
+    <div class="card-header">
         <a class="btn btn-success" routerLink="create">New [+]</a>
-    </div> -->
+    </div>
     <div class="card-body">
 
-        <table datatable class="table table-bordered">
+        <table datatable  class="table table-bordered">
             <thead class="bg-dark text-white">
                 <tr>
-                  <th>Code</th>
-                        <th style="width:200px;">Name</th>
-                        <th>Price</th>
-                        <!-- <th>Phone</th> -->
-                        <th>Action</th>
+                    <th>Code</th>
+                    <th style="width:500px;">Name</th>
+                    <th>Consume Count</th>
+                           <th>Price</th>
+                    <th>Segment Count</th>
+                           <th>Price</th>
+                    <th>Totalize Count</th>
+                            <th>Price</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-<tr  *ngFor="let item of productdata">
-    <td>{{item.code}}</td>
-    <td style="width:200px;">{{item.name}}</td>
-    <td>{{item.price}}</td>
-    <!-- <td>{{item.email}}</td> -->
-    <!-- <td>{{item.phoneno}}</td> -->
-    <td style="width: 30%">
-<!-- <a class="btn btn-primary" routerLink="Edit/{{item.id}}" >Edit</a> |  -->
-<a class="btn btn-danger"(click)="delete(item.id)">Delete</a> 
-    </td>
+                <tr  *ngFor="let item of productdata">
+                    <td>{{item.code}}</td>
+                    <td style="width:500px;">{{item.name}}</td>
+                    <td>{{item.consumedPrice}}</td>
+                    <td>{{item.countedPieces}}</td>
+                    <td>{{item.segmentedPrice}}</td>
+                    <td>{{item.countedBoxes}}</td>
+                    <td>{{item.totalizedPrice}}</td>
+                    <td>{{item.countedCtns}}</td>
+                    <td style="width: 15%">
+                <a class="btn btn-primary m-1 " routerLink="Edit/{{item.code}}" >Edit</a>|
+                <a class="btn btn-danger"(click)="delete(item.code)">Delete</a> 
+                    </td>
 
-</tr>
+                </tr>
             </tbody>
         </table>
     </div>

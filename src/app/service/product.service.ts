@@ -14,13 +14,12 @@ apiurl='https://localhost:7118/Product';
      return this.http.get(this.apiurl+"/GetAll");
    }
    SaveProduct(productdata:any){
-    return this.http.post(this.apiurl,productdata);
+    return this.http.post(this.apiurl+'/SaveProduct',productdata);
    }
-   LoadProductbycode(id:any){
-    return this.http.get(this.apiurl+'/'+id);
+   LoadProductbycode(code:any){
+    return this.http.get(this.apiurl+'/GetByCode?Code='+code);
   }
-  RemoveProduct(id:any){
-    return this.http.delete(this.apiurl+'/'+id);
+  RemoveProduct(code:any){
+    return this.http.delete(this.apiurl+'/Remove?ProductCode='+code);
   }
-
 }

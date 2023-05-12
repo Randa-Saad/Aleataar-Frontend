@@ -20,7 +20,7 @@ customerdata:any;
     this.dtoptions = {
       pagingType: 'full_numbers',
       searching:true,
-    //  paging:false
+      paging:true,
     lengthChange:false,
     language:{
       searchPlaceholder:'Text Customer'

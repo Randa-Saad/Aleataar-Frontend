@@ -13,7 +13,24 @@ import { DatePipe, formatDate } from '@angular/common';
 export class CreateinvoiceComponent implements OnInit {
   formBuilder: any;
   pdfInsertionForm: any;
+  pagetitle = "Create Invoice"
+  invoicedetail !: FormArray<any>;
+  invoiceproduct !: FormGroup<any>;
+  
+  public textAreaForm!: FormGroup;
+  public multiInsertionForm!: FormGroup;
+  pdfInsertionFormControl = new FormControl('',);
 
+  mastercustomer: any;
+  masterdassistant:any;
+  masterproduct: any;
+  editinvoiceno: any;
+  isedit = false;
+  enablePdfInsertion = false;
+  enableMultiInsertion = false;
+  editinvdetail: any;
+  Types: any = ['Ctn', 'Box', 'Piece'];
+  
   constructor(private builder: FormBuilder, private service: MasterService, private router: Router, private alert: ToastrService,
     private activeroute: ActivatedRoute) { 
 
@@ -25,21 +42,15 @@ export class CreateinvoiceComponent implements OnInit {
         textArea: ""
       });
 
+      this.multiInsertionForm = this.builder.group({
+        codeTextArea: "",
+        descriptionTextArea: "",
+        quantityTextArea: "",
+        typeTextArea: "",
+        PriceTextArea: ""
+      });
     }
-  pagetitle = "Create Invoice"
-  invoicedetail !: FormArray<any>;
-  invoiceproduct !: FormGroup<any>;
-  
-  public textAreaForm!: FormGroup;
-  pdfInsertionFormControl = new FormControl('',);
 
-  mastercustomer: any;
-  masterdassistant:any;
-  masterproduct: any;
-  editinvoiceno: any;
-  isedit = false;
-  editinvdetail: any;
-  Types: any = ['Ctn', 'Box', 'Piece'];
 
   ngOnInit(): void {
     this.GetCustomers();
@@ -60,44 +71,93 @@ export class CreateinvoiceComponent implements OnInit {
     alert("Entered Email id : " + data.pdfinsertiontext);
  }
 
- insertInvoiceOnRecords(): void
+ insertInvoiceOnRecords(insertion: string): void
  {
+    if (insertion == 'Pdf')
+    {
+        let pdfText =  this.textAreaForm?.get("textArea")?.value ;
+        let speratedNos = pdfText?.replaceAll(" " , "-");
+        let splittedProducts = speratedNos.split(/\r?\n/);
+        for(let p =0;p<splittedProducts.length;p++) {
+        var productArr =  splittedProducts[p].split("-");
+        productArr.splice(0, 0);
+        let salesprice: number = productArr[2];
+        let quantity : number= productArr[3];
+        let productcode = productArr[productArr.length -1];
+        let proddata: any;
+        let productdescription: string ;
+        let invoiceType  = this.invoiceform.get("type")?.value || '';
+        let productType = '';
+        if (invoiceType == 'Consumed' )  productType = 'Piece';
+        else if (invoiceType == 'Segmented')  productType = 'Box';
+        else if (invoiceType == 'Totalized' )  productType = 'Ctn';
+        this.service.GetProductbycode(productcode).subscribe(res => 
+          {proddata = res;
+            if(proddata !=null)
+            {
+              productdescription=proddata.name;
+              this.invoicedetail.push(this.generateAutomatedRow(productcode, productdescription, quantity, productType, salesprice));
+            } 
+        });
 
-    let pdfText =  this.textAreaForm?.get("textArea")?.value ;
-    //console.log(pdfText);
-    let speratedNos = pdfText?.replaceAll(" " , "-");
-    let splittedProducts = speratedNos.split(/\r?\n/);
-    for(let p =0;p<splittedProducts.length;p++) {
-      //let line = splittedProducts[p];
-    var productArr =  splittedProducts[p].split("-");
-    productArr.splice(0, 0);
-    let salesprice: number = productArr[2];
-    let quantity : number= productArr[3];
-    let productcode = productArr[productArr.length -1];
-    let proddata: any;
-    let productdescription: string ;
-    this.service.GetProductbycode(productcode).subscribe(res => 
-      {proddata = res;
-        debugger;
-        if(productcode=="4563") console.log(productArr);
-        if(proddata !=null)
-        {
-          productdescription=proddata.name;
-          this.invoicedetail.push(this.generateAutomatedRow(productcode, productdescription, quantity, salesprice));
-        } 
-    });
 
+      }
+    }
+    else if (insertion == 'Multi')
+    {
+      let codes = (this.multiInsertionForm?.get("codeTextArea")?.value).split(/\r?\n/);
+      let quantities = (this.multiInsertionForm?.get("quantityTextArea")?.value).split(/\r?\n/);
+      let types = (this.multiInsertionForm?.get("typeTextArea")?.value).split(/\r?\n/);
+      let prices = (this.multiInsertionForm?.get("PriceTextArea")?.value).split(/\r?\n/);
+      console.log("typesarr",types);
+      let columnsLength: number[] = [codes.length, quantities.length, types.length, prices.length];
+      let countedProducts = Math.min(...columnsLength); 
 
-   }
+      for(let p = 0;p<countedProducts;p++) 
+      {
+        this.service.GetProductbycode(codes[p]).subscribe(res => 
+          {let product: any = res;
+            if(product !=null)
+              this.invoicedetail.push(this.generateAutomatedRow(codes[p], product.name, quantities[p], types[p], prices[p])); 
+        });
+
+      }
+    }
+
   // this.Removeproduct(0);
  }
+ insertDescriptions()
+ {
+//   let descriptionArr: any[] = [];
+//   let codesArr =  (this.multiInsertionForm?.get("codeTextArea")?.value).split(/\r?\n/) ;
+//  // this.multiInsertionForm.patchValue({descriptionTextArea: codes})
+//   for(let c = 0;c<codesArr.length;c++)
+//   {console.log(codesArr[c]);
+//     this.service.GetProductbycode(codesArr[c]).subscribe(res => {
+//       let proddata: any;
+//       proddata = res;
+//       console.log(proddata.name);
+//       if (proddata != null)
+//       {
+//         descriptionArr.push(proddata.name)
+//       }
+//     });
+//   }
+//  // this.multiInsertionForm.patchValue({descriptionTextArea: codes})
+//   console.log(descriptionArr);
+//   console.log(typeof(descriptionArr));
+//   console.log(descriptionArr[0]);
+//   console.log( descriptionArr.join("<br>").toString());
+//   this.multiInsertionForm.patchValue({descriptionTextArea: descriptionArr.join("<br>").toString()});
+ }
 
- generateAutomatedRow(productcode: string,productname: string,quantity: number,salesprice: number) {
+ generateAutomatedRow(productcode: string,productname: string,quantity: number, type: string, salesprice: number) {
   return this.builder.group({
     invoiceNo: this.builder.control(''),
     productCode: this.builder.control(productcode, Validators.required),
     productName: this.builder.control(productname),
     qty: this.builder.control(quantity),
+    productType: this.builder.control(type),
     salesPrice: this.builder.control(salesprice),
     total: this.builder.control({ value: salesprice*quantity, disabled: true })
   });
@@ -209,12 +269,12 @@ async  SetEditInfo(invoiceno: any) {
     this.invoicedetail = this.invoiceform.get("details") as FormArray;
 
     let customercode = this.invoiceform.get("customerId")?.value;
-    let invoiceType = this.invoiceform.get("type")?.value;
+    let invoiceType  = this.invoiceform.get("type")?.value || '';
     if ((customercode != null && customercode != '')  || this.isedit)
     {
       if((invoiceType != null && invoiceType != '')  || this.isedit)
       {
-        this.invoicedetail.push(this.Generaterow());
+        this.invoicedetail.push(this.Generaterow(invoiceType,'manual'));
       }
       else
         this.alert.warning('Please select the invoice type', 'Validation');
@@ -228,12 +288,18 @@ async  SetEditInfo(invoiceno: any) {
   get invproducts() {
     return this.invoiceform.get("details") as FormArray;
   }
-  Generaterow() {
+  Generaterow(invoiceType: string,insertionWay: string) {
+    let type:string = '';
+
+    if (invoiceType == 'Consumed' && insertionWay == 'manual')  type = 'Piece';
+    else if (invoiceType == 'Segmented' && insertionWay == 'manual')  type = 'Box';
+    else if (invoiceType == 'Totalized' && insertionWay == 'manual')  type = 'Ctn';
+
     return this.builder.group({
       invoiceNo: this.builder.control(''),
       productCode: this.builder.control('', Validators.required),
       productName: this.builder.control(''),
-      productType: this.builder.control(''),
+      productType: this.builder.control(type),
       qty: this.builder.control(1),
       salesPrice: this.builder.control(0),
       total: this.builder.control({ value: 0, disabled: true })
@@ -277,7 +343,6 @@ async  SetEditInfo(invoiceno: any) {
     this.service.GetDAssistantbycode(dassistantcode).subscribe(res => {
       let dassistant: any;
       dassistant = res;
-      console.log("heuy");
       console.log(res);
       if (dassistant != null) {
         this.invoiceform.get("dassistantName")?.setValue(dassistant.name);
@@ -303,16 +368,39 @@ async  SetEditInfo(invoiceno: any) {
   }
 
   Itemcalculation(index: any) {
-    debugger;
+    let price: any;
     this.invoicedetail = this.invoiceform.get("details") as FormArray;
     this.invoiceproduct = this.invoicedetail.at(index) as FormGroup;
     let qty = this.invoiceproduct.get("qty")?.value;
-   // let type = this.invoiceproduct.get("productType")?.value;
-    let price = this.invoiceproduct.get("salesPrice")?.value;
-    let total = qty * price;
-    this.invoiceproduct.get("total")?.setValue(total);
+    let type = this.invoiceproduct.get("productType")?.value;
+    this.service.GetProductbycode(this.invoiceproduct.get("productCode")?.value).subscribe(res => {
+      let proddata: any;
+      proddata = res;
+      if (proddata != null) {
 
-    this.summarycalculation();
+        if ( type == 'Piece')
+        {
+          this.invoiceproduct.get("salesPrice")?.setValue(proddata.consumedPrice); 
+          price = proddata.consumedPrice; 
+        }
+        else if ( type == 'Box')
+        {
+          this.invoiceproduct.get("salesPrice")?.setValue(proddata.segmentedPrice); 
+          price = proddata.segmentedPrice;
+        }
+        else if ( type == 'Ctn')
+        {
+          this.invoiceproduct.get("salesPrice")?.setValue(proddata.totalizedPrice); 
+          price = proddata.totalizedPrice;
+        }
+
+        let total = qty * price;
+        this.invoiceproduct.get("total")?.setValue(total);
+        this.summarycalculation();
+      }
+    });
+
+
   }
   Removeproduct(index: any){
     if(confirm('Do you want to remove?')){
@@ -338,6 +426,34 @@ async  SetEditInfo(invoiceno: any) {
   //  this.invoiceform.get("netTotal")?.setValue(nettotal);
   }
 
+  enableInsertionWay(way:string)
+  {
+    if (way == "Pdf")
+    {
+      if(this.enablePdfInsertion)
+      {
+        this.enablePdfInsertion = false;
+      }
+      else
+      {
+        this.enableMultiInsertion = false;
+        this.enablePdfInsertion = true;
+      }
 
+    }
+    else if (way == "Multi")
+    {
+      if(this.enableMultiInsertion)
+      {
+        this.enableMultiInsertion = false;
+      }
+      else
+      {
+        this.enablePdfInsertion = false;
+        this.enableMultiInsertion = true;
+      }
+
+    }
+  }
 
 }
